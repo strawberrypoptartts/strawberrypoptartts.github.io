@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <title>Browser & Network Info</title>
+ <style>
+   :root {
+     --bg: #0b1020;
+     --panel: #121a33;
+     --panel2: #0f1730;
+     --text: #e7ecff;
+     --muted: #9aa7d6;
+     --accent: #7aa2ff;
+     --good: #4ade80;
+     --warn: #fbbf24;
+     --bad: #fb7185;
+     --border: rgba(255,255,255,0.1);
+     --shadow: 0 12px 30px rgba(0,0,0,.35);
+   }
+
+
+   * { box-sizing: border-box; }
+   body {
+     margin: 0;
+     font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+     background: radial-gradient(circle at top, #162044, var(--bg));
+     color: var(--text);
+     min-height: 100vh;
+     padding: 24px;
+   }
+
+
+   .wrap {
+     max-width: 1200px;
+     margin: 0 auto;
+   }
+
+
+   header {
+     display: flex;
+     flex-wrap: wrap;
+     justify-content: space-between;
+     align-items: end;
+     gap: 16px;
+     margin-bottom: 20px;
+   }
+
+
+   h1 {
+     margin: 0;
+     font-size: clamp(1.5rem, 3vw, 2.5rem);
+     letter-spacing: 0.02em;
+   }
+
+
+   .subtitle {
+     color: var(--muted);
+     margin-top: 8px;
+     line-height: 1.5;
+   }
+
+
+   .actions {
+     display: flex;
+     flex-wrap: wrap;
+     gap: 10px;
+   }
+
+
+   button {
+     border: 1px solid var(--border);
+     background: linear-gradient(180deg, #1a2650, #111936);
+     color: var(--text);
+     padding: 10px 14px;
+     border-radius: 12px;
+     cursor: pointer;
+     box-shadow: var(--shadow);
+     transition: transform .15s ease, border-color .15s ease;
+   }
+   button:hover { transform: translateY(-1px); border-color: rgba(122,162,255,.45); }
+   button:active { transform: translateY(0); }
+
+
+   .grid {
+     display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+     gap: 16px;
+   }
+
+
+   .card {
+     background: rgba(18, 26, 51, 0.9);
+     border: 1px solid var(--border);
+     border-radius: 18px;
+     padding: 16px;
+     box-shadow: var(--shadow);
+     backdrop-filter: blur(10px);
+   }
+
+
+   .card h2 {
+     margin: 0 0 12px;
+     font-size: 1.05rem;
+     color: #dbe4ff;
+   }
+
+
+   .item {
+     display: grid;
+     grid-template-columns: 170px 1fr;
+     gap: 10px;
+     padding: 8px 0;
+     border-top: 1px solid rgba(255,255,255,.06);
+     align-items: start;
+   }
+   .item:first-of-type { border-top: 0; }
+   .label { color: var(--muted); font-size: .92rem; }
+   .value { word-break: break-word; }
+   .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+
+   .status {
+     display: inline-flex;
+     align-items: center;
+     gap: 8px;
+     padding: 6px 10px;
+     border-radius: 999px;
+     background: rgba(255,255,255,.06);
+     border: 1px solid rgba(255,255,255,.08);
+     margin-bottom: 10px;
+     font-size: .92rem;
+   }
+
+
+   .dot {
+     width: 10px;
+     height: 10px;
+     border-radius: 50%;
+     background: var(--warn);
+     box-shadow: 0 0 12px currentColor;
+   }
+   .dot.good { background: var(--good); color: var(--good); }
+   .dot.bad { background: var(--bad); color: var(--bad); }
+
+
+   pre {
+     margin: 0;
+     white-space: pre-wrap;
+     word-break: break-word;
+     background: rgba(0,0,0,.2);
+     border: 1px solid rgba(255,255,255,.06);
+     padding: 12px;
+     border-radius: 14px;
+     color: #dfe7ff;
+     overflow-x: auto;
+   }
+
+
+   .small {
+     color: var(--muted);
+     font-size: 0.88rem;
+     margin-top: 8px;
+     line-height: 1.5;
+   }
+
+
+   .full {
+     grid-column: 1 / -1;
+   }
+
+
+   .perm-list, .device-list {
+     display: grid;
+     gap: 8px;
+   }
+
+
+   .badge {
+     display: inline-block;
+     padding: 3px 8px;
+     border-radius: 999px;
+     font-size: .8rem;
+     background: rgba(122,162,255,.15);
+     border: 1px solid rgba(122,162,255,.22);
+     margin-left: 8px;
+     color: #cfe0ff;
+   }
+
+
+   a { color: #a9c3ff; }
+ </style>
+</head>
+<body>
+ <div class="wrap">
+   <header>
+     <div>
+       <h1>Browser & Network Info</h1>
+       <div class="subtitle">
+         Shows the info that the browser exposes.
+         Some fields could require permission or a secure context (HTTPS).
+       </div>
+     </div>
+     <div class="actions">
+       <button onclick="refreshAll()">Refresh all</button>
+       <button onclick="getGeo()">Get location</button>
+       <button onclick="getBattery()">Get battery</button>
+     </div>
+   </header>
+
+
+   <div>
+   <strong>Public IP:</strong> <span id="public-ip">Loading...</span>
+   <div>
+      
+   <div class="grid">
+     <div class="card">
+       <h2>Connection Status</h2>
+       <div id="onlineStatus" class="status">
+         <span id="onlineDot" class="dot"></span>
+         <span id="onlineText">Checking...</span>
+       </div>
+       <div class="item"><div class="label">User visible URL</div><div class="value mono" id="url"></div></div>
+       <div class="item"><div class="label">Referrer</div><div class="value mono" id="referrer"></div></div>
+       <div class="item"><div class="label">Connection type</div><div class="value" id="connType"></div></div>
+       <div class="item"><div class="label">Effective type</div><div class="value" id="effectiveType"></div></div>
+       <div class="item"><div class="label">Downlink</div><div class="value" id="downlink"></div></div>
+       <div class="item"><div class="label">RTT</div><div class="value" id="rtt"></div></div>
+       <div class="item"><div class="label">Save-Data</div><div class="value" id="saveData"></div></div>
+     </div>
+
+
+     <div class="card">
+       <h2>Browser Info</h2>
+       <div class="item"><div class="label">User agent</div><div class="value mono" id="userAgent"></div></div>
+       <div class="item"><div class="label">UA-CH</div><div class="value mono" id="uach"></div></div>
+       <div class="item"><div class="label">Language</div><div class="value" id="language"></div></div>
+       <div class="item"><div class="label">Languages</div><div class="value mono" id="languages"></div></div>
+       <div class="item"><div class="label">Platform</div><div class="value" id="platform"></div></div>
+       <div class="item"><div class="label">Vendor</div><div class="value" id="vendor"></div></div>
+       <div class="item"><div class="label">Do Not Track</div><div class="value" id="dnt"></div></div>
+       <div class="item"><div class="label">Cookies enabled</div><div class="value" id="cookies"></div></div>
+     </div>
+
+
+     <div class="card">
+       <h2>Device Info</h2>
+       <div class="item"><div class="label">Device memory</div><div class="value" id="deviceMemory"></div></div>
+       <div class="item"><div class="label">CPU threads</div><div class="value" id="cores"></div></div>
+       <div class="item"><div class="label">Max touch points</div><div class="value" id="touch"></div></div>
+       <div class="item"><div class="label">Pixel ratio</div><div class="value" id="pixelRatio"></div></div>
+       <div class="item"><div class="label">Hardware concurrency</div><div class="value" id="hardwareConcurrency"></div></div>
+       <div class="item"><div class="label">PDF viewer enabled</div><div class="value" id="pdfEnabled"></div></div>
+       <div class="item"><div class="label">Stand-alone mode</div><div class="value" id="standalone"></div></div>
+     </div>
+
+
+     <div class="card">
+       <h2>Screen & Window</h2>
+       <div class="item"><div class="label">Screen</div><div class="value" id="screenInfo"></div></div>
+       <div class="item"><div class="label">Window size</div><div class="value" id="windowSize"></div></div>
+       <div class="item"><div class="label">Available size</div><div class="value" id="availSize"></div></div>
+       <div class="item"><div class="label">Color depth</div><div class="value" id="colorDepth"></div></div>
+       <div class="item"><div class="label">Orientation</div><div class="value" id="orientation"></div></div>
+       <div class="item"><div class="label">Timezone</div><div class="value" id="timezone"></div></div>
+       <div class="item"><div class="label">Timezone offset</div><div class="value" id="tzOffset"></div></div>
+       <div class="item"><div class="label">Date / time</div><div class="value mono" id="datetime"></div></div>
+     </div>
+
+
+     <div class="card full">
+       <h2>Storage Info</h2>
+       <div class="item"><div class="label">localStorage</div><div class="value" id="localStorageInfo"></div></div>
+       <div class="item"><div class="label">sessionStorage</div><div class="value" id="sessionStorageInfo"></div></div>
+       <div class="item"><div class="label">Storage estimate</div><div class="value mono" id="storageEstimate"></div></div>
+     </div>
+
+
+     <div class="card">
+       <h2>Battery</h2>
+       <div class="item"><div class="label">Supported</div><div class="value" id="batterySupported"></div></div>
+       <div class="item"><div class="label">Charging</div><div class="value" id="batteryCharging"></div></div>
+       <div class="item"><div class="label">Level</div><div class="value" id="batteryLevel"></div></div>
+       <div class="item"><div class="label">Charging time</div><div class="value" id="batteryChargeTime"></div></div>
+       <div class="item"><div class="label">Discharging time</div><div class="value" id="batteryDischargeTime"></div></div>
+     </div>
+
+
+     <div class="card">
+       <h2>Permissions</h2>
+       <div class="perm-list" id="permissionsList"></div>
+     </div>
+
+
+     <div class="card">
+       <h2>Geolocation</h2>
+       <div class="item"><div class="label">Status</div><div class="value" id="geoStatus">Not requested</div></div>
+       <div class="item"><div class="label">Latitude</div><div class="value mono" id="lat"></div></div>
+       <div class="item"><div class="label">Longitude</div><div class="value mono" id="lon"></div></div>
+       <div class="item"><div class="label">Accuracy</div><div class="value" id="accuracy"></div></div>
+       <div class="item"><div class="label">Altitude</div><div class="value" id="altitude"></div></div>
+       <div class="item"><div class="label">Speed</div><div class="value" id="speed"></div></div>
+       <div class="item"><div class="label">Heading</div><div class="value" id="heading"></div></div>
+     </div>
+
+
+     <div class="card full">
+       <h2>Media Devices</h2>
+       <div class="device-list" id="devices"></div>
+       <div class="small">
+         Device labels may be hidden until the browser grants permission.
+       </div>
+     </div>
+
+
+     <div class="card full">
+       <h2>Extra API Data</h2>
+       <pre id="extra"></pre>
+     </div>
+   </div>
+ </div>
+
+
+ <script>
+   function text(id, value) {
+     document.getElementById(id).textContent = value ?? 'N/A';
+   }
+
+
+   function fmtBool(v) {
+     return v === true ? 'Yes' : v === false ? 'No' : 'N/A';
+   }
+
+
+   function refreshConnection() {
+     text('url', location.href);
+     text('referrer', document.referrer || 'None');
+     text('onlineText', navigator.onLine ? 'Online' : 'Offline');
+     const dot = document.getElementById('onlineDot');
+     dot.className = 'dot ' + (navigator.onLine ? 'good' : 'bad');
+
+
+     const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+     text('connType', c?.type ?? 'N/A');
+     text('effectiveType', c?.effectiveType ?? 'N/A');
+     text('downlink', c?.downlink ? `${c.downlink} Mbps` : 'N/A');
+     text('rtt', c?.rtt ? `${c.rtt} ms` : 'N/A');
+     text('saveData', fmtBool(c?.saveData));
+   }
+
+
+   function refreshBrowser() {
+     text('userAgent', navigator.userAgent);
+     const uaData = navigator.userAgentData;
+     text('uach', uaData ? JSON.stringify({
+       brands: uaData.brands,
+       mobile: uaData.mobile,
+       platform: uaData.platform
+     }, null, 2) : 'N/A');
+
+
+     text('language', navigator.language || 'N/A');
+     text('languages', (navigator.languages || []).join(', ') || 'N/A');
+     text('platform', navigator.platform || 'N/A');
+     text('vendor', navigator.vendor || 'N/A');
+     text('dnt', navigator.doNotTrack || 'N/A');
+     text('cookies', fmtBool(navigator.cookieEnabled));
+   }
+
+
+   function refreshDevice() {
+     text('deviceMemory', navigator.deviceMemory ? `${navigator.deviceMemory} GB` : 'N/A');
+     text('cores', navigator.hardwareConcurrency ?? 'N/A');
+     text('touch', navigator.maxTouchPoints ?? 'N/A');
+     text('pixelRatio', window.devicePixelRatio ?? 'N/A');
+     text('hardwareConcurrency', navigator.hardwareConcurrency ?? 'N/A');
+     text('pdfEnabled', fmtBool(navigator.pdfViewerEnabled));
+     text('standalone', fmtBool(window.matchMedia('(display-mode: standalone)').matches));
+   }
+
+
+
+
+   async function getPublicIP() {
+ try {
+   const res = await fetch('https://api.ipify.org?format=json');
+   const data = await res.json();
+   return data.ip;
+ } catch (err) {
+   return 'Unable to fetch IP';
+ }
+}
+
+
+window.addEventListener('load', async () => {
+ const ip = await getPublicIP();
+ document.getElementById('public-ip').textContent = ip;
+});
+   function refreshScreen() {
+     text('screenInfo', `${screen.width} × ${screen.height}`);
+     text('windowSize', `${window.innerWidth} × ${window.innerHeight}`);
+     text('availSize', `${screen.availWidth} × ${screen.availHeight}`);
+     text('colorDepth', `${screen.colorDepth}-bit`);
+     const orient = screen.orientation?.type || (window.orientation !== undefined ? String(window.orientation) : 'N/A');
+     text('orientation', orient);
+     text('timezone', Intl.DateTimeFormat().resolvedOptions().timeZone || 'N/A');
+     text('tzOffset', `${new Date().getTimezoneOffset()} minutes`);
+     text('datetime', new Date().toString());
+   }
+
+
+   function refreshStorage() {
+     try {
+       text('localStorageInfo', `${localStorage.length} item(s)`);
+     } catch {
+       text('localStorageInfo', 'Unavailable');
+     }
+     try {
+       text('sessionStorageInfo', `${sessionStorage.length} item(s)`);
+     } catch {
+       text('sessionStorageInfo', 'Unavailable');
+     }
+
+
+     if (navigator.storage?.estimate) {
+       navigator.storage.estimate().then(est => {
+         const used = est.usage ?? 0;
+         const quota = est.quota ?? 0;
+         text('storageEstimate', JSON.stringify({
+           usage: used,
+           quota: quota,
+           usageMB: (used / 1048576).toFixed(2),
+           quotaMB: (quota / 1048576).toFixed(2)
+         }, null, 2));
+       }).catch(() => {
+         text('storageEstimate', 'Unavailable');
+       });
+     } else {
+       text('storageEstimate', 'Unavailable');
+     }
+   }
+
+
+   async function refreshPermissions() {
+     const list = document.getElementById('permissionsList');
+     list.innerHTML = '';
+
+
+     const permissions = ['geolocation', 'notifications', 'camera', 'microphone', 'clipboard-read', 'clipboard-write'];
+     for (const name of permissions) {
+       const row = document.createElement('div');
+       row.className = 'item';
+       const status = document.createElement('div');
+       status.className = 'value';
+
+
+       try {
+         if (navigator.permissions?.query) {
+           const result = await navigator.permissions.query({ name });
+           status.textContent = result.state;
+         } else {
+           status.textContent = 'Permissions API unavailable';
+         }
+       } catch {
+         status.textContent = 'Not supported / denied';
+       }
+
+
+       row.innerHTML = `<div class="label">${name}</div>`;
+       row.appendChild(status);
+       list.appendChild(row);
+     }
+   }
+
+
+   async function refreshDevices() {
+     const container = document.getElementById('devices');
+     container.innerHTML = '';
+     if (!navigator.mediaDevices?.enumerateDevices) {
+       container.innerHTML = '<div class="small">MediaDevices API not available.</div>';
+       return;
+     }
+
+
+     try {
+       const devices = await navigator.mediaDevices.enumerateDevices();
+       if (!devices.length) {
+         container.innerHTML = '<div class="small">No devices found.</div>';
+         return;
+       }
+
+
+       devices.forEach((d, i) => {
+         const div = document.createElement('div');
+         div.className = 'item';
+         div.innerHTML = `
+           <div class="label">${i + 1}. ${d.kind}</div>
+           <div class="value">
+             ${d.label || '(label hidden)'}<span class="badge">${d.deviceId ? 'has id' : 'no id'}</span>
+           </div>
+         `;
+         container.appendChild(div);
+       });
+     } catch (e) {
+       container.innerHTML = `<div class="small">Could not enumerate devices: ${e.message}</div>`;
+     }
+   }
+
+
+   async function getGeo() {
+     text('geoStatus', 'Requesting...');
+     if (!navigator.geolocation) {
+       text('geoStatus', 'Geolocation not supported');
+       return;
+     }
+
+
+     navigator.geolocation.getCurrentPosition(
+       (pos) => {
+         const c = pos.coords;
+         text('geoStatus', 'Granted');
+         text('lat', c.latitude);
+         text('lon', c.longitude);
+         text('accuracy', `${c.accuracy} meters`);
+         text('altitude', c.altitude ?? 'N/A');
+         text('speed', c.speed ?? 'N/A');
+         text('heading', c.heading ?? 'N/A');
+       },
+       (err) => {
+         text('geoStatus', `Denied / unavailable: ${err.message}`);
+       },
+       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+     );
+   }
+
+
+   async function getBattery() {
+     if (!navigator.getBattery) {
+       text('batterySupported', 'No');
+       text('batteryCharging', 'N/A');
+       text('batteryLevel', 'N/A');
+       text('batteryChargeTime', 'N/A');
+       text('batteryDischargeTime', 'N/A');
+       return;
+     }
+
+
+     try {
+       const b = await navigator.getBattery();
+       text('batterySupported', 'Yes');
+       text('batteryCharging', fmtBool(b.charging));
+       text('batteryLevel', `${Math.round(b.level * 100)}%`);
+       text('batteryChargeTime', isFinite(b.chargingTime) ? `${b.chargingTime} sec` : 'N/A');
+       text('batteryDischargeTime', isFinite(b.dischargingTime) ? `${b.dischargingTime} sec` : 'N/A');
+     } catch {
+       text('batterySupported', 'Unavailable');
+     }
+   }
+
+
+   function refreshExtra() {
+     const extra = {
+       hardwareConcurrency: navigator.hardwareConcurrency ?? null,
+       deviceMemory: navigator.deviceMemory ?? null,
+       maxTouchPoints: navigator.maxTouchPoints ?? null,
+       webdriver: navigator.webdriver ?? null,
+       onLine: navigator.onLine,
+       fullscreenEnabled: document.fullscreenEnabled,
+       visibilityState: document.visibilityState,
+       pageXOffset: window.scrollX,
+       pageYOffset: window.scrollY,
+       prefersDark: matchMedia('(prefers-color-scheme: dark)').matches,
+       prefersReducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
+       prefersContrastMore: matchMedia('(prefers-contrast: more)').matches
+     };
+     text('extra', JSON.stringify(extra, null, 2));
+   }
+
+
+   function refreshAll() {
+     refreshConnection();
+     refreshBrowser();
+     refreshDevice();
+     refreshScreen();
+     refreshStorage();
+     refreshPermissions();
+     refreshDevices();
+     getBattery();
+     refreshExtra();
+     text('datetime', new Date().toString());
+   }
+
+
+   // Update on resize / online changes
+   window.addEventListener('resize', refreshScreen);
+   window.addEventListener('online', refreshConnection);
+   window.addEventListener('offline', refreshConnection);
+   if (navigator.connection?.addEventListener) {
+     navigator.connection.addEventListener('change', refreshConnection);
+   }
+   if (screen.orientation?.addEventListener) {
+     screen.orientation.addEventListener('change', refreshScreen);
+   }
+
+
+   refreshAll();
+ </script>
+</body>
+</html>
+
