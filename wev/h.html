@@ -1,0 +1,171 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+  <foreignObject width="100%" height="100%">
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Web Embed Viewer</title>
+        <style>
+          * { box-sizing: border-box; margin: 0; padding: 0; }
+
+          body, html {
+            background: #000000;
+            height: 100%;
+          }
+
+          .page {
+            background: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 2rem;
+            font-family: sans-serif;
+          }
+
+          h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 2rem;
+            text-align: center;
+          }
+
+          .instructions {
+            font-size: 14px;
+            color: #ffffff;
+            font-weight: 400;
+            max-width: 580px;
+            text-align: center;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+          }
+
+          .url-input {
+            width: 100%;
+            max-width: 580px;
+            padding: 14px 28px;
+            font-size: 15px;
+            background: #000000;
+            color: #ffffff;
+            border: 5px solid #ffffff;
+            border-radius: 999px;
+            outline: none;
+            margin-bottom: 1.5rem;
+            font-family: sans-serif;
+          }
+
+          .url-input::placeholder { color: #888888; }
+
+          .go-btn {
+            padding: 13px 52px;
+            font-size: 15px;
+            background: #000000;
+            color: #ffffff;
+            border: 5px solid #ffffff;
+            border-radius: 999px;
+            cursor: pointer;
+            font-family: sans-serif;
+            font-weight: 500;
+          }
+
+          .go-btn:hover { background: #111111; }
+
+          .embed-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: #000000;
+            z-index: 100;
+            flex-direction: column;
+          }
+
+          .controls {
+            height: 44px;
+            background: #000000;
+            border-bottom: 1px solid #333333;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 16px;
+            gap: 8px;
+          }
+
+          .ctrl-btn {
+            background: #000000;
+            color: #ffffff;
+            border: 5px solid #ffffff;
+            padding: 5px 16px;
+            cursor: pointer;
+            font-size: 13px;
+            border-radius: 999px;
+            font-family: sans-serif;
+          }
+
+          .ctrl-btn:hover { background: #111111; }
+
+          #web-frame {
+            flex-grow: 1;
+            border: none;
+            width: 100%;
+            height: calc(100vh - 44px);
+          }
+        </style>
+      </head>
+      <body>
+
+        <div class="page">
+          <h1>instructions</h1>
+          <p class="instructions">
+            Enter any URL below to load it in an embedded viewer. Add <strong>https://</strong> if needed — it will be added automatically. Note that some sites (Google, Facebook, etc.) block embedding via server headers and may not load.
+          </p>
+          <input class="url-input" id="url-input" type="text" placeholder="URL" />
+          <button class="go-btn" id="go-btn">Go</button>
+        </div>
+
+        <div class="embed-overlay" id="embed-overlay">
+          <div class="controls">
+            <button class="ctrl-btn" id="fs-btn">⛶ Fullscreen</button>
+            <button class="ctrl-btn" id="close-btn">✕ Close</button>
+          </div>
+          <iframe id="web-frame" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
+        </div>
+
+        <script>
+          const urlInput = document.getElementById('url-input');
+          const goBtn = document.getElementById('go-btn');
+          const overlay = document.getElementById('embed-overlay');
+          const iframe = document.getElementById('web-frame');
+          const closeBtn = document.getElementById('close-btn');
+          const fsBtn = document.getElementById('fs-btn');
+
+          function loadUrl() {
+            let url = urlInput.value.trim();
+            if (!url) return;
+            if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+            iframe.src = url;
+            overlay.style.display = 'flex';
+          }
+
+          goBtn.addEventListener('click', loadUrl);
+          urlInput.addEventListener('keypress', e => { if (e.key === 'Enter') loadUrl(); });
+
+          closeBtn.addEventListener('click', () => {
+            overlay.style.display = 'none';
+            iframe.src = '';
+            urlInput.value = '';
+          });
+
+          fsBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) overlay.requestFullscreen().catch(() => {});
+            else document.exitFullscreen();
+          });
+        </script>
+
+      </body>
+    </html>
+  </foreignObject>
+</svg>
