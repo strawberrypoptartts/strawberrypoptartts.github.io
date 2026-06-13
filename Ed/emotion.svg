@@ -1,0 +1,447 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+  viewBox="0 0 900 580" width="900" height="580"
+  style="font-family: 'Courier New', monospace; background: #0a0a0f;">
+
+  <defs>
+    <!-- Scanline pattern overlay -->
+    <pattern id="scanlines" x="0" y="0" width="1" height="3" patternUnits="userSpaceOnUse">
+      <rect width="1" height="1" fill="rgba(0,255,180,0.03)"/>
+      <rect y="1" width="1" height="2" fill="transparent"/>
+    </pattern>
+
+    <!-- Glow filter -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glowStrong" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- Corner clip for camera box -->
+    <clipPath id="cameraClip">
+      <rect x="0" y="0" width="480" height="360" rx="4"/>
+    </clipPath>
+  </defs>
+
+  <!-- ═══════════════════════════════════════ BACKGROUND GRID ═══ -->
+  <rect width="900" height="580" fill="#0a0a0f"/>
+  <g opacity="0.15">
+    <line x1="0" y1="20" x2="900" y2="20" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="40" x2="900" y2="40" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="60" x2="900" y2="60" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="80" x2="900" y2="80" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="100" x2="900" y2="100" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="120" x2="900" y2="120" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="140" x2="900" y2="140" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="160" x2="900" y2="160" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="180" x2="900" y2="180" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="200" x2="900" y2="200" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="220" x2="900" y2="220" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="240" x2="900" y2="240" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="260" x2="900" y2="260" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="280" x2="900" y2="280" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="300" x2="900" y2="300" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="320" x2="900" y2="320" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="340" x2="900" y2="340" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="360" x2="900" y2="360" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="380" x2="900" y2="380" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="400" x2="900" y2="400" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="420" x2="900" y2="420" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="440" x2="900" y2="440" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="460" x2="900" y2="460" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="480" x2="900" y2="480" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="500" x2="900" y2="500" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="520" x2="900" y2="520" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="540" x2="900" y2="540" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="0" y1="560" x2="900" y2="560" stroke="#00ffb4" stroke-width="0.3"/>
+    <!-- Vertical lines -->
+    <line x1="30" y1="0" x2="30" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="60" y1="0" x2="60" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="90" y1="0" x2="90" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="120" y1="0" x2="120" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="150" y1="0" x2="150" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="180" y1="0" x2="180" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="210" y1="0" x2="210" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="240" y1="0" x2="240" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="270" y1="0" x2="270" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="300" y1="0" x2="300" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="330" y1="0" x2="330" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="360" y1="0" x2="360" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="390" y1="0" x2="390" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="420" y1="0" x2="420" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="450" y1="0" x2="450" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="480" y1="0" x2="480" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="510" y1="0" x2="510" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="540" y1="0" x2="540" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="570" y1="0" x2="570" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="600" y1="0" x2="600" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="630" y1="0" x2="630" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="660" y1="0" x2="660" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="690" y1="0" x2="690" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="720" y1="0" x2="720" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="750" y1="0" x2="750" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="780" y1="0" x2="780" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="810" y1="0" x2="810" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="840" y1="0" x2="840" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+    <line x1="870" y1="0" x2="870" y2="580" stroke="#00ffb4" stroke-width="0.3"/>
+  </g>
+
+  <!-- ═══════════════════════════════════════ HEADER ═══ -->
+  <rect x="20" y="10" width="860" height="36" fill="none" stroke="#00ffb4" stroke-width="0.8" opacity="0.4"/>
+  <text x="34" y="32" fill="#00ffb4" font-size="11" opacity="0.7" filter="url(#glow)">
+    SYSTEM: AFFECTIVE_VISION_v2.4 ░░ NEURAL_FACE_TRACKER ░░ EMOTION_CLASSIFIER_ONLINE
+  </text>
+  <text x="760" y="32" fill="#00ffb4" font-size="11" opacity="0.7">
+    REC ●
+  </text>
+  <circle cx="748" cy="28" r="4" fill="#ff3355" opacity="0.9" filter="url(#glow)">
+    <animate attributeName="opacity" values="0.9;0.2;0.9" dur="1.2s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- ═══════════════════════════════════════ MAIN CAMERA FRAME ═══ -->
+  <!-- Outer glow border -->
+  <rect x="25" y="56" width="494" height="390" rx="6" fill="none" stroke="#00ffb4" stroke-width="1.5" opacity="0.6" filter="url(#glow)"/>
+  <!-- Inner frame -->
+  <rect x="27" y="58" width="490" height="386" rx="5" fill="#050508" stroke="#00ffb4" stroke-width="0.5" opacity="0.3"/>
+
+  <!-- Corner brackets — camera box -->
+  <g stroke="#00ffb4" stroke-width="2.5" fill="none" filter="url(#glow)">
+    <!-- TL -->
+    <path d="M27 82 L27 58 L51 58"/>
+    <!-- TR -->
+    <path d="M467 58 L491 58 L491 82"/>
+    <!-- BL -->
+    <path d="M27 410 L27 434 L51 434"/>
+    <!-- BR -->
+    <path d="M467 434 L491 434 L491 410"/>
+  </g>
+
+  <!-- Camera label -->
+  <text x="38" y="74" fill="#00ffb4" font-size="9" opacity="0.8" letter-spacing="2">LIVE FEED</text>
+  <text x="440" y="74" fill="#00ffb4" font-size="9" opacity="0.8" letter-spacing="1">720p</text>
+
+  <!-- ── foreignObject: Camera + Canvas + Logic ── -->
+  <foreignObject x="28" y="76" width="462" height="356">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+      <head>
+        <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { background: transparent; overflow: hidden; width: 462px; height: 356px; }
+          #container { position: relative; width: 462px; height: 356px; }
+          video { position: absolute; top: 0; left: 0; width: 462px; height: 356px;
+                  object-fit: cover; transform: scaleX(-1); border-radius: 3px; }
+          canvas { position: absolute; top: 0; left: 0; width: 462px; height: 356px; transform: scaleX(-1); }
+          #start-btn {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+            background: rgba(0,255,180,0.1); border: 1.5px solid #00ffb4;
+            color: #00ffb4; font-family: 'Courier New', monospace; font-size: 13px;
+            letter-spacing: 2px; padding: 12px 28px; cursor: pointer; border-radius: 3px;
+            text-shadow: 0 0 8px #00ffb4; transition: all 0.2s;
+          }
+          #start-btn:hover { background: rgba(0,255,180,0.2); }
+          #status {
+            position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+            color: #00ffb4; font-family: 'Courier New', monospace; font-size: 10px;
+            letter-spacing: 1px; opacity: 0.7; text-shadow: 0 0 6px #00ffb4;
+            white-space: nowrap;
+          }
+          #no-face {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(0,255,180,0.25); font-family: 'Courier New', monospace;
+            font-size: 11px; letter-spacing: 3px; pointer-events: none;
+          }
+        </style>
+      </head>
+      <body>
+        <div id="container">
+          <video id="video" autoplay muted playsinline></video>
+          <canvas id="overlay"></canvas>
+          <button id="start-btn" onclick="startCamera()">▶ ACTIVATE CAMERA</button>
+          <div id="status"></div>
+          <div id="no-face" style="display:none">NO FACE DETECTED</div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+        <script>
+          const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model';
+          const video = document.getElementById('video');
+          const canvas = document.getElementById('overlay');
+          const statusEl = document.getElementById('status');
+          const noFaceEl = document.getElementById('no-face');
+          let detecting = false;
+          let currentEmotion = 'neutral';
+
+          function setStatus(msg) { statusEl.textContent = msg; }
+
+          async function startCamera() {
+            document.getElementById('start-btn').style.display = 'none';
+            setStatus('LOADING NEURAL MODELS…');
+            try {
+              await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+              await faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL);
+              setStatus('MODELS LOADED ✓  REQUESTING CAMERA…');
+              const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+              video.srcObject = stream;
+              video.onloadedmetadata = () => { canvas.width = 462; canvas.height = 356; detectLoop(); setStatus(''); };
+            } catch(e) {
+              setStatus('ERROR: ' + e.message);
+            }
+          }
+
+          async function detectLoop() {
+            const ctx = canvas.getContext('2d');
+            const opts = new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.5 });
+
+            async function tick() {
+              ctx.clearRect(0, 0, 462, 356);
+              const detections = await faceapi.detectAllFaces(video, opts).withFaceExpressions();
+
+              if (detections.length === 0) {
+                noFaceEl.style.display = 'flex';
+                broadcastEmotion('none');
+              } else {
+                noFaceEl.style.display = 'none';
+                detections.forEach(det => {
+                  const box = det.detection.box;
+                  // Flip for mirrored canvas
+                  const x = 462 - box.x - box.width;
+
+                  // Face bounding box
+                  ctx.strokeStyle = '#00ffb4';
+                  ctx.lineWidth = 2;
+                  ctx.shadowColor = '#00ffb4';
+                  ctx.shadowBlur = 8;
+                  ctx.strokeRect(x, box.y, box.width, box.height);
+                  ctx.shadowBlur = 0;
+
+                  // Corner ticks
+                  const t = 14;
+                  ctx.lineWidth = 3;
+                  ctx.strokeStyle = '#00ffb4';
+                  [[x,box.y],[x+box.width,box.y],[x,box.y+box.height],[x+box.width,box.y+box.height]].forEach(([cx,cy],i) => {
+                    ctx.beginPath();
+                    ctx.moveTo(cx + (i%2===0?t:-t), cy); ctx.lineTo(cx, cy); ctx.lineTo(cx, cy + (i<2?t:-t));
+                    ctx.stroke();
+                  });
+
+                  // Top label
+                  const topEmotion = Object.entries(det.expressions).sort((a,b)=>b[1]-a[1])[0];
+                  const label = topEmotion[0].toUpperCase();
+                  const conf = Math.round(topEmotion[1]*100);
+                  ctx.fillStyle = '#00ffb4';
+                  ctx.font = 'bold 11px Courier New';
+                  ctx.shadowColor = '#00ffb4'; ctx.shadowBlur = 6;
+                  ctx.fillText(`${label}  ${conf}%`, x, box.y > 16 ? box.y - 6 : box.y + 14);
+                  ctx.shadowBlur = 0;
+
+                  // Broadcast
+                  broadcastEmotion(topEmotion[0]);
+
+                  // Confidence bars
+                  const emotions = Object.entries(det.expressions).sort((a,b)=>b[1]-a[1]).slice(0,3);
+                  emotions.forEach(([em, conf2], idx) => {
+                    const bx = x, by = box.y + box.height + 6 + idx * 14;
+                    ctx.fillStyle = 'rgba(0,255,180,0.15)';
+                    ctx.fillRect(bx, by, box.width, 10);
+                    ctx.fillStyle = '#00ffb4';
+                    ctx.fillRect(bx, by, box.width * conf2, 10);
+                    ctx.fillStyle = '#fff';
+                    ctx.font = '8px Courier New';
+                    ctx.fillText(em.slice(0,3).toUpperCase() + ' ' + Math.round(conf2*100)+'%', bx+2, by+8);
+                  });
+                });
+              }
+              requestAnimationFrame(tick);
+            }
+            tick();
+          }
+
+          function broadcastEmotion(emotion) {
+            if (emotion !== currentEmotion) {
+              currentEmotion = emotion;
+              // Post to parent SVG via custom event on window
+              window.dispatchEvent(new CustomEvent('emotionDetected', { detail: emotion }));
+              // Also try parent
+              try { window.parent.dispatchEvent(new CustomEvent('emotionDetected', { detail: emotion })); } catch(e) {}
+              // Update SVG element directly
+              try {
+                const svgDoc = window.frameElement ? window.frameElement.ownerDocument : document;
+                const el = svgDoc.getElementById('emotion-display');
+                if (el) el.setAttribute('data-emotion', emotion);
+                // Trigger visibility on SVG emotion faces
+                ['happy','sad','angry','surprised','disgusted','fearful','neutral'].forEach(e => {
+                  const face = svgDoc.getElementById('face-' + e);
+                  if (face) face.style.opacity = (e === emotion) ? '1' : '0.18';
+                });
+                const lbl = svgDoc.getElementById('emotion-label');
+                if (lbl) lbl.textContent = emotion === 'none' ? '— SCANNING —' : emotion.toUpperCase();
+              } catch(ex) {}
+            }
+          }
+        </script>
+      </body>
+    </html>
+  </foreignObject>
+
+  <!-- Scanline overlay on camera -->
+  <rect x="28" y="76" width="462" height="356" fill="url(#scanlines)" pointer-events="none" opacity="0.5"/>
+
+  <!-- ═══════════════════════════════════════ STATUS BAR BELOW CAMERA ═══ -->
+  <rect x="25" y="450" width="494" height="26" fill="rgba(0,255,180,0.05)" stroke="#00ffb4" stroke-width="0.6" opacity="0.7"/>
+  <text x="35" y="467" fill="#00ffb4" font-size="9" opacity="0.7" letter-spacing="1">DETECTED EMOTION:</text>
+  <text id="emotion-label" x="180" y="467" fill="#00ffb4" font-size="10" font-weight="bold" letter-spacing="2" filter="url(#glow)">— INACTIVE —</text>
+
+  <!-- ═══════════════════════════════════════ EMOTION PANEL (RIGHT) ═══ -->
+  <!-- Panel frame -->
+  <rect x="530" y="56" width="348" height="390" rx="5" fill="rgba(0,255,180,0.03)" stroke="#00ffb4" stroke-width="1" opacity="0.6"/>
+  <text x="544" y="73" fill="#00ffb4" font-size="9" letter-spacing="3" opacity="0.7">EMOTION REFERENCE BANK</text>
+
+  <!-- ── 7 emotion tiles: 2 columns ── -->
+  <!-- Col positions: 540, 718 | Row positions: 80, 186, 292, 398 -->
+
+  <!-- 1. HAPPY -->
+  <g id="face-happy" opacity="0.18" style="transition: opacity 0.4s;">
+    <rect x="540" y="80" width="160" height="96" rx="4" fill="rgba(255,220,0,0.06)" stroke="#ffdc00" stroke-width="1"/>
+    <text x="620" y="93" fill="#ffdc00" font-size="8" text-anchor="middle" letter-spacing="2" opacity="0.8">HAPPY</text>
+    <!-- SVG face -->
+    <circle cx="620" cy="133" r="30" fill="none" stroke="#ffdc00" stroke-width="2"/>
+    <circle cx="609" cy="127" r="3" fill="#ffdc00"/>
+    <circle cx="631" cy="127" r="3" fill="#ffdc00"/>
+    <path d="M607 140 Q620 152 633 140" fill="none" stroke="#ffdc00" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- cheek blush -->
+    <ellipse cx="601" cy="138" rx="5" ry="3" fill="#ffdc00" opacity="0.3"/>
+    <ellipse cx="639" cy="138" rx="5" ry="3" fill="#ffdc00" opacity="0.3"/>
+  </g>
+
+  <!-- 2. SAD -->
+  <g id="face-sad" opacity="0.18" style="transition: opacity 0.4s;">
+    <rect x="718" y="80" width="152" height="96" rx="4" fill="rgba(80,140,255,0.06)" stroke="#508cff" stroke-width="1"/>
+    <text x="794" y="93" fill="#508cff" font-size="8" text-anchor="middle" letter-spacing="2" opacity="0.8">SAD</text>
+    <circle cx="794" cy="133" r="30" fill="none" stroke="#508cff" stroke-width="2"/>
+    <!-- sad eyes with tears -->
+    <ellipse cx="783" cy="126" rx="3.5" ry="4" fill="#508cff"/>
+    <ellipse cx="805" cy="126" rx="3.5" ry="4" fill="#508cff"/>
+    <!-- eyebrows sad -->
+    <path d="M778 119 Q783 116 788 119" fill="none" stroke="#508cff" stroke-width="1.5"/>
+    <path d="M800 119 Q805 116 810 119" fill="none" stroke="#508cff" stroke-width="1.5"/>
+    <!-- sad mouth -->
+    <path d="M781 142 Q794 134 807 142" fill="none" stroke="#508cff" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- tear -->
+    <path d="M783 130 Q780 136 783 140" fill="none" stroke="#508cff" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- 3. ANGRY -->
+  <g id="face-angry" opacity="0.18" style="transition: opacity 0.4s;">
+    <rect x="540" y="186" width="160" height="96" rx="4" fill="rgba(255,60,60,0.06)" stroke="#ff3c3c" stroke-width="1"/>
+    <text x="620" y="199" fill="#ff3c3c" font-size="8" text-anchor="middle" letter-spacing="2" opacity="0.8">ANGRY</text>
+    <circle cx="620" cy="238" r="30" fill="none" stroke="#ff3c3c" stroke-width="2"/>
+    <!-- angry brows -->
+    <path d="M605 225 L617 229" stroke="#ff3c3c" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M635 225 L623 229" stroke="#ff3c3c" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- eyes -->
+    <path d="M607 232 Q611 229 615 232" fill="none" stroke="#ff3c3c" stroke-width="2" stroke-linecap="round"/>
+    <path d="M625 232 Q629 229 633 232" fill="none" stroke="#ff3c3c" stroke-width="2" stroke-linecap="round"/>
+    <!-- mouth -->
+    <path d="M608 247 Q620 240 632 247" fill="none" stroke="#ff3c3c" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- vein line -->
+    <path d="M607 218 Q604 213 608 211" fill="none" stroke="#ff3c3c" stroke-width="1.2" opacity="0.6"/>
+  </g>
+
+  <!-- 4. SURPRISED -->
+  <g id="face-surprised" opacity="0.18" style="transition: opacity 0.4s;">
+    <rect x="718" y="186" width="152" height="96" rx="4" fill="rgba(255,180,0,0.06)" stroke="#ffb400" stroke-width="1"/>
+    <text x="794" y="199" fill="#ffb400" font-size="8" text-anchor="middle" letter-spacing="2" opacity="0.8">SURPRISED</text>
+    <circle cx="794" cy="238" r="30" fill="none" stroke="#ffb400" stroke-width="2"/>
+    <!-- raised brows -->
+    <path d="M781 221 Q786 217 791 221" fill="none" stroke="#ffb400" stroke-width="2"/>
+    <path d="M797 221 Q802 217 807 221" fill="none" stroke="#ffb400" stroke-width="2"/>
+    <!-- wide eyes -->
+    <circle cx="787" cy="230" r="5" fill="none" stroke="#ffb400" stroke-width="2"/>
+    <circle cx="801" cy="230" r="5" fill="none" stroke="#ffb400" stroke-width="2"/>
+    <circle cx="787" cy="230" r="2" fill="#ffb400"/>
+    <circle cx="801" cy="230" r="2" fill="#ffb400"/>
+    <!-- O mouth -->
+    <ellipse cx="794" cy="246" rx="7" ry="8" fill="none" stroke="#ffb400" stroke-width="2"/>
+  </g>
+
+  <!-- 5. DISGUSTED -->
+  <g id="face-disgusted" opacity="0.18" style="transition: opacity 0.4s;">
+    <rect x="540" y="292" width="160" height="96" rx="4" fill="rgba(140,255,80,0.06)" stroke="#8cff50" stroke-width="1"/>
+    <text x="620" y="305" fill="#8cff50" font-size="8" text-anchor="middle" letter-spacing="2" opacity="0.8">DISGUSTED</text>
+    <circle cx="620" cy="344" r="30" fill="none" stroke="#8cff50" stroke-width="2"/>
+    <!-- one raised brow -->
+    <path d="M605 330 L615 334" stroke="#8cff50" stroke-width="2" stroke-linecap="round"/>
+    <path d="M625 331 Q630 329 635 331" fill="none" stroke="#8cff50" stroke-width="2" stroke-linecap="round"/>
+    <!-- squint left, open right -->
+    <path d="M605 337 Q610 334 615 337" fill="none" stroke="#8cff50" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="629" cy="337" r="4" fill="none" stroke="#8cff50" stroke-width="1.8"/>
+    <!-- wavy disgusted mouth -->
+    <path d="M606 353 Q610 349 614 353 Q618 357 622 353 Q626 349 630 353 Q633 357 635 353" fill="none" stroke="#8cff50" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- 6. FEARFUL -->
+  <g id="face-fearful" opacity="0.18" style="transition: opacity 0.4s;">
+    <rect x="718" y="292" width="152" height="96" rx="4" fill="rgba(160,80,255,0.06)" stroke="#a050ff" stroke-width="1"/>
+    <text x="794" y="305" fill="#a050ff" font-size="8" text-anchor="middle" letter-spacing="2" opacity="0.8">FEARFUL</text>
+    <circle cx="794" cy="344" r="30" fill="none" stroke="#a050ff" stroke-width="2"/>
+    <!-- wide scared eyes -->
+    <ellipse cx="784" cy="338" rx="6" ry="7" fill="none" stroke="#a050ff" stroke-width="2"/>
+    <ellipse cx="804" cy="338" rx="6" ry="7" fill="none" stroke="#a050ff" stroke-width="2"/>
+    <circle cx="784" cy="339" r="2.5" fill="#a050ff"/>
+    <circle cx="804" cy="339" r="2.5" fill="#a050ff"/>
+    <!-- brow raised center -->
+    <path d="M780 329 Q786 325 792 329" fill="none" stroke="#a050ff" stroke-width="1.8"/>
+    <path d="M796 329 Q802 325 808 329" fill="none" stroke="#a050ff" stroke-width="1.8"/>
+    <!-- quivering mouth -->
+    <path d="M784 354 Q794 360 804 354" fill="none" stroke="#a050ff" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- sweat drop -->
+    <path d="M812 326 Q815 330 812 334 Q809 330 812 326" fill="#a050ff" opacity="0.6"/>
+  </g>
+
+  <!-- 7. NEUTRAL (wide, center-bottom) -->
+  <g id="face-neutral" opacity="0.18" style="transition: opacity 0.4s;">
+    <rect x="540" y="398" width="330" height="40" rx="4" fill="rgba(0,255,180,0.06)" stroke="#00ffb4" stroke-width="1"/>
+    <text x="560" y="413" fill="#00ffb4" font-size="8" letter-spacing="2" opacity="0.8">NEUTRAL</text>
+    <!-- inline small face -->
+    <circle cx="700" cy="418" r="14" fill="none" stroke="#00ffb4" stroke-width="1.5"/>
+    <circle cx="694" cy="415" r="2" fill="#00ffb4"/>
+    <circle cx="706" cy="415" r="2" fill="#00ffb4"/>
+    <line x1="694" y1="423" x2="706" y2="423" stroke="#00ffb4" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- Panel grid separator lines -->
+  <line x1="710" y1="78" x2="710" y2="444" stroke="#00ffb4" stroke-width="0.5" opacity="0.2"/>
+  <line x1="530" y1="180" x2="878" y2="180" stroke="#00ffb4" stroke-width="0.5" opacity="0.2"/>
+  <line x1="530" y1="286" x2="878" y2="286" stroke="#00ffb4" stroke-width="0.5" opacity="0.2"/>
+  <line x1="530" y1="392" x2="878" y2="392" stroke="#00ffb4" stroke-width="0.5" opacity="0.2"/>
+
+  <!-- ═══════════════════════════════════════ BOTTOM STATUS BAR ═══ -->
+  <rect x="20" y="490" width="860" height="28" fill="rgba(0,255,180,0.04)" stroke="#00ffb4" stroke-width="0.6" opacity="0.5"/>
+  <text x="34" y="508" fill="#00ffb4" font-size="9" opacity="0.6" letter-spacing="1">
+    FACE-API.JS  ░  TINY_FACE_DETECTOR  ░  EXPRESSION_NET  ░  7-CLASS EMOTION CLASSIFIER  ░  REAL-TIME
+  </text>
+  <text x="780" y="508" fill="#00ffb4" font-size="9" opacity="0.5">≈30fps</text>
+
+  <!-- Scanline overlay on whole SVG -->
+  <rect width="900" height="580" fill="url(#scanlines)" pointer-events="none" opacity="0.4"/>
+
+  <!-- ═══════════════════════════════════════ JS TO WIRE EVENTS ═══ -->
+  <script type="text/javascript">
+    <![CDATA[
+    // Listen for emotion events bubbled from foreignObject iframe
+    window.addEventListener('emotionDetected', function(e) {
+      const emotion = e.detail;
+      const emotions = ['happy','sad','angry','surprised','disgusted','fearful','neutral'];
+      emotions.forEach(function(em) {
+        var el = document.getElementById('face-' + em);
+        if (el) el.style.opacity = (em === emotion) ? '1' : '0.18';
+      });
+      var lbl = document.getElementById('emotion-label');
+      if (lbl) lbl.textContent = emotion === 'none' ? '— SCANNING —' : emotion.toUpperCase();
+    });
+    ]]>
+  </script>
+</svg>
