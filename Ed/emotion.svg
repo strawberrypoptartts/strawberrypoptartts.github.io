@@ -157,7 +157,7 @@
       </head>
       <body>
         <div id="container">
-          <video id="video" autoplay muted playsinline></video>
+          <video id="video" autoplay="autoplay" muted="muted" playsinline="playsinline"></video>
           <canvas id="overlay"></canvas>
           <button id="start-btn" onclick="startCamera()">▶ ACTIVATE CAMERA</button>
           <div id="status"></div>
