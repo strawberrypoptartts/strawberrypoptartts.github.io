@@ -165,7 +165,7 @@
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
-        <script>
+        <script>//<![CDATA[
           const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model';
           const video = document.getElementById('video');
           const canvas = document.getElementById('overlay');
@@ -281,7 +281,7 @@
               } catch(ex) {}
             }
           }
-        </script>
+        //]]></script>
       </body>
     </html>
   </foreignObject>
