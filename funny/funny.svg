@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="768" viewBox="0 0 1024 768">
+  <foreignObject x="0" y="0" width="1024" height="768">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;margin:0;overflow:hidden;">
+      <style>
+<![CDATA[
+html, body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#111;
+    font-family:Arial, sans-serif;
+}
+
+#startScreen{
+    position:absolute;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#111;
+    z-index:2;
+}
+
+#urlBar{
+    width:500px;
+    max-width:80vw;
+    padding:14px 18px;
+    border:none;
+    outline:none;
+    border-radius:10px;
+    font-size:18px;
+    text-align:center;
+    background:#222;
+    color:white;
+    box-shadow:0 0 15px rgba(0,0,0,.5);
+}
+
+iframe{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:none;
+    display:none;
+    background:white;
+}
+
+#cameraBubble{
+    position:fixed;
+    width:150px;
+    height:150px;
+    top:20px;
+    right:20px;
+    border-radius:50%;
+    overflow:hidden;
+    border:3px solid white;
+    display:none;
+    cursor:grab;
+    z-index:9999;
+    box-shadow:0 0 15px rgba(0,0,0,.5);
+    background:black;
+}
+
+#cameraBubble video{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    pointer-events:none;
+    transform: scaleX(-1);
+}
+]]>
+      </style>
+
+      <div id="startScreen">
+        <input id="urlBar" placeholder="Type a URL and press Enter" />
+      </div>
+
+      <iframe id="site"></iframe>
+
+      <div id="cameraBubble">
+        <video autoplay="autoplay" muted="muted" playsinline="playsinline"></video>
+      </div>
+
+      <script>
+<![CDATA[
+const input = document.getElementById("urlBar");
+const iframe = document.getElementById("site");
+const startScreen = document.getElementById("startScreen");
+
+input.focus();
+
+input.addEventListener("keydown", e=>{
+    if(e.key==="Enter"){
+        let url=input.value.trim();
+
+        if(!/^https?:\/\//i.test(url)){
+            url="https://"+url;
+        }
+
+        iframe.src=url;
+        iframe.style.display="block";
+        startScreen.style.display="none";
+    }
+});
+
+// hey guys welcome back to another video
+const bubble=document.getElementById("cameraBubble");
+const video=bubble.querySelector("video");
+
+navigator.mediaDevices?.getUserMedia({video:true})
+.then(stream=>{
+    video.srcObject=stream;
+    bubble.style.display="block";
+})
+.catch(()=>{
+    console.log("Camera permission denied.");
+});
+
+// drag
+let dragging=false;
+let offsetX=0;
+let offsetY=0;
+
+bubble.addEventListener("mousedown",e=>{
+    dragging=true;
+    bubble.style.cursor="grabbing";
+    const rect=bubble.getBoundingClientRect();
+    offsetX=e.clientX-rect.left;
+    offsetY=e.clientY-rect.top;
+});
+
+document.addEventListener("mousemove",e=>{
+    if(!dragging)return;
+
+    bubble.style.left=(e.clientX-offsetX)+"px";
+    bubble.style.top=(e.clientY-offsetY)+"px";
+    bubble.style.right="auto";
+});
+
+document.addEventListener("mouseup",()=>{
+    dragging=false;
+    bubble.style.cursor="grab";
+});
+
+// alt + s
+let visible=true;
+
+document.addEventListener("keydown",e=>{
+    if(e.altKey && e.key.toLowerCase()==="s"){
+        e.preventDefault();
+        visible=!visible;
+        bubble.style.display=visible?"block":"none";
+    }
+});
+]]>
+      </script>
+    </div>
+  </foreignObject>
+</svg>
